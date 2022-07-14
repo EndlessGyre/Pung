@@ -9,22 +9,26 @@ class GameScene extends Phaser.Scene{
 
     preload(){
         //console.log('preload');
-        this.load.image('paddle', '../img/pung-paddle.png');
-        this.load.image('ball', '../img/ball.png');
+        this.load.image('playerPaddle', './img/pung-paddle.png');
+        this.load.image('enemyPaddle', './img/pung-paddle.png');
+        this.load.image('ball', './img/ball.png');
 
     }//end prelaod
 
     create(){
         //console.log('create');
-        gameState.player = this.physics.add.sprite(64, 256, 'paddle');
+        gameState.player = this.physics.add.sprite(64, 256, 'playerPaddle');
+        gameState.enemy = this.physics.add.sprite((config.width - 64), 256, 'enemyPaddle');
         gameState.ball = this.physics.add.sprite(750, 128, 'ball');
 
         this.physics.world.setBounds(0, 0, config.width, config.height, false, true, true, true);
 
         gameState.player.setCollideWorldBounds(true);
+        gameState.enemy.setCollideWorldBounds(true);
         gameState.ball.setCollideWorldBounds(true);
         this.physics.add.collider(gameState.player, gameState.ball);
         gameState.player.setImmovable(true);
+        gameState.enemy.setImmovable(true);
 
         gameState.ball.body.setVelocity(200, 200);
         gameState.ball.body.bounce.setTo(1,1);
