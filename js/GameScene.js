@@ -31,14 +31,14 @@ class GameScene extends Phaser.Scene{
 
         // The ball collides with both paddles;
         this.physics.add.collider(gameState.player, gameState.ball);
-        this.physics.add.collider(gameState.enemy, gameState.ball);
+        this.physics.add.collider(gameState.enemy, gameState.ball, () => {gameState.enemy.setVelocityY(0);});
 
         // The paddles are unmoved by the ball;
         gameState.player.setImmovable(true);
         gameState.enemy.setImmovable(true);
 
         // Sets ball initial movement and bounce factor;
-        gameState.ball.body.setVelocity(200, 200);
+        gameState.ball.body.setVelocity(100, 100);
         gameState.ball.body.bounce.setTo(1,1);
 
         // Makes Shift, Space, Enter, and Arrow keys availablle;
@@ -56,6 +56,33 @@ class GameScene extends Phaser.Scene{
         }else{
             gameState.player.setVelocityY(0);
         }
+
+
+        // Opponent tracks ball while it moves toward it
+        if(gameState.ball.body.velocity.x > 0){
+            if(gameState.ball.y > (gameState.enemy.y + 64)){
+                gameState.enemy.setVelocityY(100);
+            }else if(gameState.ball.y < (gameState.enemy.y - 64)){
+                gameState.enemy.setVelocityY(-100);
+            }else{
+                gameState.enemy.setVelocityY(0);
+            }
+        
+        if(gameState.ball.body.velocity.x < 0){            
+            gameState.enemy.setVelocityY(0);            
+        }
+
+        
+
+        }
+
+        // Opponent paddle recenters when ball is moving away
+        // if(gameState.ball.body.velocity.x < 0){
+        //     gameState.enemy.setVelocityY(-50);
+        // }else{
+        //     gameState.enemy.setVelocityY(0);
+        // }
+
     }//end update
 
 
