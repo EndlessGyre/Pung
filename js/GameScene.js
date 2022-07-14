@@ -38,7 +38,7 @@ class GameScene extends Phaser.Scene{
         gameState.enemy.setImmovable(true);
 
         // Sets ball initial movement and bounce factor;
-        gameState.ball.body.setVelocity(200, 200);
+        gameState.ball.body.setVelocity(500, 500);
         gameState.ball.body.bounce.setTo(1,1);
 
         // Makes Shift, Space, Enter, and Arrow keys availablle;
