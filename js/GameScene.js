@@ -1,4 +1,9 @@
-const gameState = {};
+const gameState = {
+    playerScore: 0,
+    enemyScore: 0
+};
+
+let timer;
 
 class GameScene extends Phaser.Scene{
     constructor() {
@@ -20,6 +25,10 @@ class GameScene extends Phaser.Scene{
         gameState.player = this.physics.add.sprite(64, 256, 'playerPaddle');
         gameState.enemy = this.physics.add.sprite((config.width - 64), 256, 'enemyPaddle');
         gameState.ball = this.physics.add.sprite(750, 128, 'ball');
+        
+        
+        timer = game.time.create(true);
+        
 
         // World is bounded on all sides except behind my paddle;
         this.physics.world.setBounds(0, 0, config.width, config.height, false, true, true, true);
@@ -40,6 +49,9 @@ class GameScene extends Phaser.Scene{
         // Sets ball initial movement and bounce factor;
         gameState.ball.body.setVelocity(350, 350);
         gameState.ball.body.bounce.setTo(1,1);
+
+        //
+
 
         // Makes Shift, Space, Enter, and Arrow keys availablle;
         gameState.cursors = this.input.keyboard.createCursorKeys();
@@ -68,14 +80,24 @@ class GameScene extends Phaser.Scene{
                 gameState.enemy.setVelocityY(0);
             }
         
+        }
+
         if(gameState.ball.body.velocity.x < 0){            
             gameState.enemy.setVelocityY(0);            
         }
 
+        if(gameState.ball.body.x < 0){
+            gameState.playerScore++;
+            this.add.text((config.width * .15), 50, `PLAYER SCORE: ${gameState.playerScore}`);
+            gameState.ball.destroy();
+            timer.add(5000, this.dropBall, this);
+            //this.dropBall();
+        }
+        
         
 
-        }
-
+        
+        this.add.text((config.width * .7), 50, 'OPPONENT SCORE: ');
         // Opponent paddle recenters when ball is moving away
         // if(gameState.ball.body.velocity.x < 0){
         //     gameState.enemy.setVelocityY(-50);
@@ -85,9 +107,14 @@ class GameScene extends Phaser.Scene{
 
     }//end update
 
-
-
-
+    dropBall(){
+        gameState.ball = this.physics.add.sprite(750, 128, 'ball');
+        gameState.ball.body.setVelocity(-250, 350);
+        this.physics.add.collider(gameState.player, gameState.ball);
+        this.physics.add.collider(gameState.enemy, gameState.ball, () => {gameState.enemy.setVelocityY(0);});
+        gameState.ball.body.bounce.setTo(1,1);
+        gameState.ball.setCollideWorldBounds(true);
+    }
 
 
 }
